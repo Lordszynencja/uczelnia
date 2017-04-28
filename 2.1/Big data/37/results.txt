@@ -1,0 +1,192 @@
+
+
+################
+FOR h=50
+##################
+file1: Kgram.java
+file2: Minhash.java
+k: 4
+result: 0.02
+##################
+##################
+file1: RW.java
+file2: Minhash.java
+k: 4
+result: 0.0
+##################
+##################
+file1: Kgram.java
+file2: RW.java
+k: 4
+result: 0.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii0.txt
+k: 7
+result: 1.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii1.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii1.txt
+file2: kolor_magii2.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii2.txt
+file2: kolor_magii3.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 3
+result: 0.02
+##################
+##################
+file1: test1.txt
+file2: test2.txt
+k: 2
+result: 0.64
+##################
+
+
+################
+FOR h=150
+##################
+file1: Kgram.java
+file2: Minhash.java
+k: 4
+result: 0.03333333333333333
+##################
+##################
+file1: RW.java
+file2: Minhash.java
+k: 4
+result: 0.0
+##################
+##################
+file1: Kgram.java
+file2: RW.java
+k: 4
+result: 0.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii0.txt
+k: 7
+result: 1.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii1.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii1.txt
+file2: kolor_magii2.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii2.txt
+file2: kolor_magii3.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 3
+result: 0.0
+##################
+##################
+file1: test1.txt
+file2: test2.txt
+k: 2
+result: 0.58
+##################
+
+
+################
+FOR h=250
+##################
+file1: Kgram.java
+file2: Minhash.java
+k: 4
+result: 0.02
+##################
+##################
+file1: RW.java
+file2: Minhash.java
+k: 4
+result: 0.0
+##################
+##################
+file1: Kgram.java
+file2: RW.java
+k: 4
+result: 0.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii0.txt
+k: 7
+result: 1.0
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii1.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii1.txt
+file2: kolor_magii2.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii2.txt
+file2: kolor_magii3.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 7
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 3
+result: 0.0
+##################
+##################
+file1: test1.txt
+file2: test2.txt
+k: 2
+result: 0.564
+##################

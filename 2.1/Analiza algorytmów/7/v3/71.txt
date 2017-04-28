@@ -1,0 +1,2 @@
+time: 571s
+result: 90

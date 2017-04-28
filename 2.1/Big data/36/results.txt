@@ -1,0 +1,56 @@
+##################
+file1: Kgram.java
+file2: Jaccard.java
+k: 4
+inter: [[import,java,util,public], [java,util,public,class], [int,k,Set,Kgram]]
+result: 0.009966777408637873
+##################
+##################
+file1: FilesLoader.java
+file2: Jaccard.java
+k: 4
+inter: [[import,java,util,public], [java,util,public,class]]
+result: 0.008438818565400843
+##################
+##################
+file1: Kgram.java
+file2: FilesLoader.java
+k: 4
+inter: [[import,java,util,public], [java,util,public,class]]
+result: 0.007067137809187279
+##################
+##################
+file1: kolor_magii0.txt
+file2: kolor_magii1.txt
+k: 7
+inter: []
+result: 0.0
+##################
+##################
+file1: kolor_magii1.txt
+file2: kolor_magii2.txt
+k: 7
+inter: []
+result: 0.0
+##################
+##################
+file1: kolor_magii2.txt
+file2: kolor_magii3.txt
+k: 7
+inter: []
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 7
+inter: []
+result: 0.0
+##################
+##################
+file1: kolor_magii3.txt
+file2: kolor_magii4.txt
+k: 3
+inter: [[g³osem,ciê¿kim,jak], [siê,o,kilka], [Rincewind,Wcale,nie], [w,miejscu,gdzie], [prêdzej,czy,póŸniej], [pierwszy,w,¿yciu], [wyjaœni³,Rincewind,Nie], [raz,pierwszy,w]]
+result: 5.706134094151213E-4
+##################
