@@ -1,2 +1,2 @@
-time: 3s
+time: 9s
 result: 115

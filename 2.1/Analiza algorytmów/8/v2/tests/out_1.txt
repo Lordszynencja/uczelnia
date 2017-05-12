@@ -1,0 +1,3 @@
+chosen processors:
+0
+1
