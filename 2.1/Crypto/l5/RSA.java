@@ -28,10 +28,12 @@ public class RSA implements ICoder {
 		for (int i=0;i<k;i++) {
 			p[i] = new BigInteger(keysize, 40, r);
 			n = n.multiply(p[i]);
-			phi = phi.multiply(p[i].subtract(BigInteger.ONE));
+			BigInteger piMinusOne = p[i].subtract(BigInteger.ONE);
+			phi = phi.multiply(piMinusOne).divide(phi.gcd(piMinusOne));
 		}
 		e = new BigInteger("3");
 		d = e.modInverse(phi);
+		System.out.println("d=" + d.toString());
 		
 		canEncrypt = true;
 		canDecrypt = true;
@@ -65,17 +67,27 @@ public class RSA implements ICoder {
 		canEncrypt = true;
 	}
 	
+	private byte[] encryptBlock(BigInteger block) {
+		return block.modPow(e, n).toByteArray()
+	}
+	
 	public byte[] encrypt(byte[] m, EncryptionModeEnum mode) {
-		if (mode == OFB || mode == CBC) return null;
+		if (mode == EncryptionModeEnum.OFB || mode == EncryptionModeEnum.CBC) return null;
 		if (!canEncrypt) return null;
 		BigInteger m0 = new BigInteger(m);
-		if (m0.compareTo(n) >= 0) return null;
+		List<BigInteger> blocks = new LinkedList<BigInteger>();
+		while (m0.compareTo(BigInteger.ZERO) == 1) {
+			BigInteger[] mods = m0.divideWithRemainder(n);
+			blocks.add(mods[1]);
+			m0 = mods[0];
+		}
+		
 		
 		return m0.modPow(e, n).toByteArray();
 	}
 	
-	public byte[] decrypt(byte[] c, EncryptionModeEnum mode) {
-		if (mode == OFB || mode == CBC) return null;
+	public byte[] decrypt(byte[] c, EncryptionModeEnum mode, ) {
+		if (mode == EncryptionModeEnum.OFB || mode == EncryptionModeEnum.CBC) return null;
 		if (!canDecrypt) return null;
 		BigInteger c0 = new BigInteger(c);
 		if (c0.compareTo(n) >= 0) return null;

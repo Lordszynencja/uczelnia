@@ -38,7 +38,6 @@ function solveFor(times, precedence, needs, maxNeeds)
 		@constraint(mod, endAfterI[i, i] == 1)#
 		@constraint(mod, endAfterIStart[i, i] == 1)#
 		@constraint(mod, workingAtStart[i, i] == 1)#
-		
 	end
 	
 	for i=1:size(precedence)[1]
@@ -78,12 +77,12 @@ function solveFor(times, precedence, needs, maxNeeds)
 		if j == 1
 			for k=1:m
 				@constraint(mod, 0 <= costs[i, 1, k] <= maxNeeds[k])
-				@constraint(mod, costs[i, 1, k] >= needs[1][k]*workingAtStart[i, 1])
+				@constraint(mod, costs[i, 1, k] == needs[1][k]*workingAtStart[i, 1])
 			end
 		else
 			for k=1:m
 				@constraint(mod, 0 <= costs[i, j, k] <= maxNeeds[k])
-				@constraint(mod, costs[i, j, k] >= costs[i, j-1, k]+needs[j][k]*workingAtStart[i, j])
+				@constraint(mod, costs[i, j, k] == costs[i, j-1, k]+needs[j][k]*workingAtStart[i, j])
 			end
 		end
 	end

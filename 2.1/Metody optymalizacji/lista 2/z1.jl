@@ -4,9 +4,7 @@ using JuMP
 using GLPKMathProgInterface
 using Clp
 
-
-
-function preparePossibleSizes(sizes, possibleSizes, actualSizes, sizeLeft)
+function preparePossibleSizes(sizes, possibleSizes, actualSizes, sizeLeft)#prepares possible cuttings
 	for i=1:length(sizes)
 		if sizes[i] <= sizeLeft
 			possibleSizes = union(possibleSizes, preparePossibleSizes(sizes, [], vcat(actualSizes, [sizes[i]]), sizeLeft-sizes[i]))
@@ -21,7 +19,7 @@ function preparePossibleSizes(sizes, possibleSizes, actualSizes, sizeLeft)
 	return possibleSizes
 end
 
-function calculateTrash(deskSize, sizes, possibleSizes)
+function calculateTrash(deskSize, sizes, possibleSizes)#calculates trash left after each possible cutting
 	trash = []
 	for i=1:size(possibleSizes)[1]
 		append!(trash, deskSize - sum(possibleSizes[i][j]*sizes[j] for j=1:size(sizes)[1]))
@@ -50,12 +48,13 @@ function solveFor(deskSize, wantedSizes, wantedAmounts)
 	
 	m = Model(solver = GLPKSolverMIP())
 	
-	@variable(m, x[1:n] >= 0, Int)
+	@variable(m, x[1:n] >= 0, Int)#number of made cuttings
 	
+	#minimal trash
 	@objective(m, Min, sum(trash[i]*x[i] for i=1:n) + sum((sum(x[j] * possibleSizes[j][i] for j=1:n) - wantedAmounts[i])*wantedSizes[i] for i=1:length(wantedSizes)))
 	
 	for i=1:length(wantedSizes)
-		@constraint(m, sum(x[j] * possibleSizes[j][i] for j=1:n) >= wantedAmounts[i])
+		@constraint(m, sum(x[j] * possibleSizes[j][i] for j=1:n) >= wantedAmounts[i])#sum of desk with size wantedSizes[j] should meet needs
 	end
 	
 	#print(m)
@@ -77,8 +76,4 @@ function solveStandard()
 	standardWantedSizes = [3, 5, 7]
 	standardWantedAmounts = [80, 120, 110]
 	solveFor(standardDeskSize, standardWantedSizes, standardWantedAmounts)
-end
-
-function r()
-	include("z1.jl")
 end
