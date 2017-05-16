@@ -2,15 +2,18 @@ import java.math.*;
 import java.util.*;
 import java.security.SecureRandom;
 
-public class RSA implements ICoder {
-	public static int defaultKeysize = 2048;
-	public static int defaultK = 2;
+public class RSACRT implements ICoder {
+	public static int defaultKeysize = 1024;
+	public static int defaultK = 4;
 	
 	private boolean canEncrypt = false;
 	private boolean canDecrypt = false;
+	private int k;
 	private BigInteger n;
 	private BigInteger e;
-	private BigInteger d;
+	private BigInteger p[];
+	private BigInteger d[];
+	private BigInteger t[];
 	private Random r = new SecureRandom();
 	
 	public void createKey() {
@@ -22,22 +25,27 @@ public class RSA implements ICoder {
 	}
 	
 	public void createKey(int k, int keysize) {
-		BigInteger[] p = new BigInteger[k];
+		this.k = k;
 		n = BigInteger.ONE;
 		e = new BigInteger("17");
 		boolean isOk = false;
 		while (!isOk) {
 			try {
-				BigInteger phi = BigInteger.ONE;
+				p = new BigInteger[k];
+				d = new BigInteger[k];
+				t = new BigInteger[k-1];
 				for (int i=0;i<k;i++) {
 					p[i] = new BigInteger(keysize, 40, r);
 					n = n.multiply(p[i]);
-					BigInteger piMinusOne = p[i].subtract(BigInteger.ONE);
-					phi = phi.multiply(piMinusOne).divide(phi.gcd(piMinusOne));
+					d[i] = e.modInverse(p[i].subtract(BigInteger.ONE));
 				}
-				d = e.modInverse(phi);
+				BigInteger m = p[0];
+				for (int i=1;i<k;i++) {
+					t[i-1] = m.modInverse(p[i]);
+					m = m.multiply(p[i]);
+				}
 				isOk = true;
-			} catch(ArithmeticException e) {
+			} catch (ArithmeticException e) {
 			}
 		}
 		
@@ -62,14 +70,34 @@ public class RSA implements ICoder {
 	public byte[] getPrivateKey() {
 		List<byte[]> list = new LinkedList<byte[]>();
 		list.add(n.toByteArray());
-		list.add(d.toByteArray());
+		for (int i=0;i<k;i++) {
+			list.add(p[i].toByteArray());
+		}
+		for (int i=0;i<k;i++) {
+			list.add(d[i].toByteArray());
+		}
+		for (int i=0;i<k-1;i++) {
+			list.add(t[i].toByteArray());
+		}
 		return Transformer.join(list);
 	}
 	
-	public void setPrivateKey(byte[] k) {
-		List<byte[]> list = Transformer.split(k);
+	public void setPrivateKey(byte[] key) {
+		List<byte[]> list = Transformer.split(key);
+		k = list.size()/3;
 		n = new BigInteger(list.get(0));
-		d = new BigInteger(list.get(1));
+		p = new BigInteger[k];
+		for (int i=0;i<k;i++) {
+			p[i] = new BigInteger(list.get(i+1));
+		}
+		d = new BigInteger[k];
+		for (int i=0;i<k;i++) {
+			d[i] = new BigInteger(list.get(i+k+1));
+		}
+		t = new BigInteger[k-1];
+		for (int i=0;i<k-1;i++) {
+			t[i] = new BigInteger(list.get(i+k+k+1));
+		}
 		canDecrypt = true;
 	}
 	
@@ -96,7 +124,51 @@ public class RSA implements ICoder {
 	}
 	
 	private BigInteger decryptBlock(byte[] block) {
-		return new BigInteger(block).modPow(d, n);
+		BigInteger c = new BigInteger(block);
+		int cores = Runtime.getRuntime().availableProcessors();
+		final int coresNo = (cores > k ? k : cores);
+		
+		final BigInteger[] mi = new BigInteger[k];
+		Thread[] threads = new Thread[coresNo];
+		for (int i=0;i<coresNo;i++) {
+			final int threadId = i;
+			threads[i] = new Thread() {
+				public void run() {
+					int a = threadId;
+					while (a<k) {
+						mi[a] = c.modPow(d[a], p[a]);
+						a += coresNo;
+					}
+				}
+			};
+			threads[i].start();
+		}
+		
+		boolean hasNull = true;
+		int check = 0;
+		while (hasNull) {
+			hasNull = false;
+			while (check < k && mi[check] != null) {
+				check++;
+			}
+			if (check < k) {
+				hasNull = true;
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					
+				}
+			}
+		}
+		
+		BigInteger x = mi[0];
+		BigInteger m = p[0];
+		for (int i=1;i<k;i++) {
+			x = x.add(m.multiply(mi[i].subtract(x).multiply(t[i-1]).mod(p[i])));
+			m = m.multiply(p[i]);
+		}
+		
+		return x;
 	}
 	
 	public byte[] decrypt(byte[] c, EncryptionModeEnum mode) {
