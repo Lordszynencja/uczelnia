@@ -2,30 +2,15 @@ using JuMP
 using GLPKMathProgInterface
 
 function getP()
-	A = Array{Float64}(4, 4)
-	
-	A[1, 1] = 0
-	A[1, 2] = 3
-	A[1, 3] = 1
-	A[1, 4] = 6
-	A[2, 1] = 1
-	A[2, 2] = 1
-	A[2, 3] = 7
-	A[2, 4] = 1
-	A[3, 1] = 1
-	A[3, 2] = 7
-	A[3, 3] = 1
-	A[3, 4] = 1
-	A[4, 1] = 9
-	A[4, 2] = 1
-	A[4, 3] = 0
-	A[4, 4] = 0
+	A = [0 3 1 6;
+		1 1 7 1;
+		1 7 1 1;
+		9 1 0 0]
 	
 	return A/10
 end
 
 function solveFor(P)
-	#println("P:\n", P)
 	n = size(P)[1]
 	model = Model(solver = GLPKSolverMIP())
 	
@@ -38,15 +23,11 @@ function solveFor(P)
 		@constraint(model, sum(P[j, i]*x[j] for j=1:n) == x[i])
 	end
 	
-	
-	#print(model)
-	
 	res = solve(model)
 	
 	if res == :Optimal
 		res_x = getvalue(x)
 		println(res_x)
-		
 		return res_x
 	end
 	return res
@@ -61,9 +42,8 @@ function pointB()
 end
 
 function pointC()
-	chance = 0
 	P1 = getP()^128
-	println("szansa na przejście do stanu 3 w 128 krokach z losowo wybranego stanu: ", sum(P1[i, 3] for i=1:4)/4)
+	println("szansa na przejście do stanu 3 w 128 krokach z losowo wybranego stanu: ", sum(P1[i, 4] for i=1:4)/4)
 end
 
 function pointD()
@@ -87,6 +67,10 @@ function pointD()
 		println("max: ", max)
 	end
 end
+
+println()
+println()
+println()
 
 pointA()
 pointB()

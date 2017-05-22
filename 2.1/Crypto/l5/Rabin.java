@@ -3,7 +3,7 @@ import java.security.*;
 import java.util.*;
 
 public class Rabin implements ICoder{
-	private static int defaultKeySize = 2048;
+	private static int defaultKeySize = 1024;
 
 	private boolean canEncrypt = false;
 	private boolean canDecrypt = false;

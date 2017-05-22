@@ -80,4 +80,3 @@ for i=1:size(alphas)[1]
 	solveFor(toP(getA1(), alpha))
 	solveFor(toP(getA2(), alpha))
 end
-
