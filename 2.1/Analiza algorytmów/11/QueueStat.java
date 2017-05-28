@@ -11,6 +11,7 @@ public class QueueStat {
 	private int stepsTotal = 0;
 	private double backChance;
 	private double forwardChance;
+	int maxState = 0;
 	
 	public QueueStat(int queueSize, double backChance, double forwardChance) {
 		size = queueSize;
@@ -49,12 +50,11 @@ public class QueueStat {
 				changed = true;
 			}
 		}
-		if (changed && lastVisitTimes[actualStatus] > 0) {
-			returnTimes[actualStatus].add(stepsTotal-lastVisitTimes[actualStatus]);
-		}
+		returnTimes[actualStatus].add(stepsTotal-lastVisitTimes[actualStatus]);
 		lastVisitTimes[actualStatus] = stepsTotal;
 		numberOfVisits[actualStatus]++;
 		stepsTotal++;
+		if (actualStatus > maxState) maxState = actualStatus;
 	}
 	
 	public void calculate(int steps) {
@@ -74,20 +74,20 @@ public class QueueStat {
 			.append("Actual position: ").append(actualStatus).append("\n") //
 			.append("Last visits: ").append("\n");
 		
-		for (int i=0;i<size;i++) {
+		for (int i=0;i<maxState;i++) {
 			s.append(i).append(": ").append(lastVisitTimes[i]).append("\n");
 		}
 		
 		s.append("Number of visits: ").append("\n");
-		for (int i=0;i<size;i++) {
+		for (int i=0;i<maxState;i++) {
 			s.append(i).append(": ").append(numberOfVisits[i]).append("\n");
 		}
 		
 		s.append("Mean time between visits: ").append("\n");
-		for (int i=0;i<size;i++) {
+		for (int i=0;i<maxState;i++) {
 			int sum = 0;
 			for (Integer t : returnTimes[i]) sum += t;
-			s.append(i).append(": ").append(returnTimes[i].size() > 0 ? sum/returnTimes[i].size() : -1).append("\n");
+			s.append(i).append(": ").append(returnTimes[i].size() > 0 ? ((double)sum)/returnTimes[i].size() : -1).append("\n");
 		}
 		
 		return s.toString();

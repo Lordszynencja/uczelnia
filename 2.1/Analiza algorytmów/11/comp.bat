@@ -1,3 +1,3 @@
 javac Test.java
-java Test
+java Test > out.txt
 PAUSE
